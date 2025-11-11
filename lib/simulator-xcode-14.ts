@@ -74,6 +74,9 @@ export class SimulatorXcode14 extends EventEmitter implements
     this._simctl = new Simctl({
       udid: this._udid,
     });
+    this._simctl.initializeLimClient().catch((err) => {
+      this.log.error(`Failed to initialize Limrun client: ${err.message}`);
+    });
     this._xcodeVersion = xcodeVersion;
     // platformVersion cannot be found initially, since getting it has side effects for
     // our logic for figuring out if a sim has been run

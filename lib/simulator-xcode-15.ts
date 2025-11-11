@@ -16,14 +16,8 @@ export class SimulatorXcode15 extends SimulatorXcode14 {
    * @return True if the given application is installed.
    */
   isAppInstalled = async (bundleId: string): Promise<boolean> => {
-    try {
-      const appContainer = await this.simctl.getAppContainer(bundleId);
-      return appContainer.endsWith('.app') && await fs.exists(appContainer);
-    } catch {
-      // get_app_container subcommand fails for system applications,
-      // as well as the hidden appinfo command
-      return (await this._fetchSystemAppBundleIds()).has(bundleId);
-    }
+    const info = await this.simctl.appInfo(bundleId);
+    return info.includes('ApplicationType');
   };
 
   /**
