@@ -65,14 +65,18 @@ export class SimulatorXcode14 extends EventEmitter implements
    *
    * @param udid - The Simulator ID.
    * @param xcodeVersion - The target Xcode version in format {major, minor, build}.
+   * @param limInstanceApiUrl - The URL of the Limrun instance API.
+   * @param limInstanceToken - The token of the Limrun instance.
    * @param log - Optional logger instance.
    */
-  constructor(udid: string, xcodeVersion: XcodeVersion, log: AppiumLogger | null = null) {
+  constructor(udid: string, xcodeVersion: XcodeVersion, limInstanceApiUrl: string, limInstanceToken: string, log: AppiumLogger | null = null) {
     super();
 
     this._udid = String(udid);
     this._simctl = new Simctl({
       udid: this._udid,
+      limInstanceApiUrl: limInstanceApiUrl,
+      limInstanceToken: limInstanceToken,
     });
     this._xcodeVersion = xcodeVersion;
     // platformVersion cannot be found initially, since getting it has side effects for
