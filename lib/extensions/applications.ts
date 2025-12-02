@@ -1,7 +1,5 @@
 import _ from 'lodash';
-import path from 'path';
-import { fs, plist, util } from '@appium/support';
-import B from 'bluebird';
+import { util } from '@appium/support';
 import { waitForCondition } from 'asyncbox';
 import type { CoreSimulator, InteractsWithApps, LaunchAppOptions } from '../types';
 
@@ -26,34 +24,8 @@ export async function getUserInstalledBundleIdsByBundleName(
   this: CoreSimulatorWithApps,
   bundleName: string
 ): Promise<string[]> {
-  const appsRoot = path.resolve(this.getDir(), 'Containers', 'Bundle', 'Application');
-  // glob all Info.plist from simdir/data/Containers/Bundle/Application
-  const infoPlists = await fs.glob('*/*.app/Info.plist', {
-    cwd: appsRoot,
-    absolute: true,
-  });
-  if (_.isEmpty(infoPlists)) {
-    return [];
-  }
-
-  const bundleInfoPromises: Promise<any>[] = [];
-  for (const infoPlist of infoPlists) {
-    bundleInfoPromises.push((async () => {
-      try {
-        return await plist.parsePlistFile(infoPlist);
-      } catch {
-        return null;
-      }
-    })());
-  }
-  const bundleInfos = (await B.all(bundleInfoPromises)).filter(_.isPlainObject);
-  const bundleIds = bundleInfos
-    .filter(({ CFBundleName }) => CFBundleName === bundleName)
-    .map(({ CFBundleIdentifier }) => CFBundleIdentifier);
-  if (_.isEmpty(bundleIds)) {
-    return [];
-  }
-
+  const allApps = await this.simctl.listApps();
+  const bundleIds = Object.values(allApps).filter((app: any) => app.ApplicationType === 'User' && app.CFBundleName === bundleName).map((app: any) => app.CFBundleIdentifier);
   this.log.debug(
     `The simulator has ${util.pluralize('bundle', bundleIds.length, true)} which ` +
     `have '${bundleName}' as their 'CFBundleName': ${JSON.stringify(bundleIds)}`
@@ -69,11 +41,10 @@ export async function getUserInstalledBundleIdsByBundleName(
  */
 export async function isAppInstalled(this: CoreSimulatorWithApps, bundleId: string): Promise<boolean> {
   try {
-    const appContainer = await this.simctl.getAppContainer(bundleId);
-    if (!appContainer.endsWith('.app')) {
+    const allApps = await this.simctl.listApps();
+    if (!allApps[bundleId]) {
       return false;
     }
-    return await fs.exists(appContainer);
   } catch {
     // get_app_container subcommand fails for system applications,
     // so we try the hidden appinfo subcommand, which prints correct info for
@@ -85,6 +56,7 @@ export async function isAppInstalled(this: CoreSimulatorWithApps, bundleId: stri
       return false;
     }
   }
+  return false;
 }
 
 /**
@@ -152,20 +124,6 @@ export async function isAppRunning(this: CoreSimulatorWithApps, bundleId: string
  * @throws {Error} if the given app is not installed.
  */
 export async function scrubApp(this: CoreSimulatorWithApps, bundleId: string): Promise<void> {
-  const appDataRoot = await this.simctl.getAppContainer(bundleId, 'data');
-  const appFiles = await fs.glob('**/*', {
-    cwd: appDataRoot,
-    nodir: true,
-    absolute: true,
-  });
-  this.log.info(`Found ${appFiles.length} ${bundleId} app ${util.pluralize('file', appFiles.length, false)} to scrub`);
-  if (_.isEmpty(appFiles)) {
-    return;
-  }
-
-  try {
-    await this.terminateApp(bundleId);
-  } catch {}
-  await B.all(appFiles.map((p) => fs.rimraf(p)));
+  return this.removeApp(bundleId);
 }
 

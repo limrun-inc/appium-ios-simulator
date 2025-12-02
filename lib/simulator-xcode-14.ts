@@ -1,4 +1,4 @@
-import { fs, timing, util } from '@appium/support';
+import { timing, util } from '@appium/support';
 import { waitForCondition, retryInterval } from 'asyncbox';
 import { getDeveloperRoot, SIMULATOR_APP_NAME} from './utils';
 import { exec } from 'teen_process';
@@ -213,10 +213,7 @@ export class SimulatorXcode14 extends EventEmitter implements
    * @returns True if the current Simulator has never been started before.
    */
   async isFresh(): Promise<boolean> {
-    const cachesRoot = path.resolve(this.getDir(), 'Library', 'Caches');
-    return (await fs.exists(cachesRoot))
-      ? (await fs.glob('*', {cwd: cachesRoot})).length === 0
-      : true;
+    return true;
   }
 
   /**
