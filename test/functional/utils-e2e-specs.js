@@ -1,7 +1,7 @@
 // transpile:mocha
 import { killAllSimulators } from '../../lib/utils';
 import { getSimulator } from '../../lib/simulator';
-import { Simctl } from 'node-simctl';
+import { Simctl } from '@limrun/node-simctl';
 import { LONG_TIMEOUT, verifyStates } from './helpers';
 
 const OS_VERSION = process.env.MOBILE_OS_VERSION || '14.0';

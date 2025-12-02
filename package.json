@@ -36,12 +36,12 @@
   "dependencies": {
     "@appium/support": "^7.0.0-rc.1",
     "@xmldom/xmldom": "^0.x",
-    "appium-xcode": "^6.0.0",
+    "@limrun/appium-xcode": "6.1.2-lim.1",
     "async-lock": "^1.0.0",
     "asyncbox": "^3.0.0",
     "bluebird": "^3.5.1",
     "lodash": "^4.2.1",
-    "node-simctl": "file:../node-simctl",
+    "@limrun/node-simctl": "8.0.5-lim.1",
     "semver": "^7.0.0",
     "source-map-support": "^0.x",
     "teen_process": "^3.0.0"

@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import B from 'bluebird';
 import * as TeenProcess from 'teen_process';
-import xcode from 'appium-xcode';
+import xcode from '@limrun/appium-xcode';
 import {killAllSimulators, simExists} from '../../lib/utils';
 import { toBiometricDomainComponent } from '../../lib/extensions/biometric';
 import { verifyDevicePreferences } from '../../lib/extensions/settings';

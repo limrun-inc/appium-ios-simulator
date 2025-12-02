@@ -2,11 +2,11 @@
 import _ from 'lodash';
 import { killAllSimulators, MOBILE_SAFARI_BUNDLE_ID } from '../../lib/utils';
 import { getSimulator } from '../../lib/simulator';
-import { Simctl } from 'node-simctl';
+import { Simctl } from '@limrun/node-simctl';
 import B from 'bluebird';
 import { retryInterval, waitForCondition } from 'asyncbox';
 import path from 'path';
-import xcode from 'appium-xcode';
+import xcode from '@limrun/appium-xcode';
 import { LONG_TIMEOUT, verifyStates } from './helpers';
 
 const BUNDLE_ID = 'io.appium.TestApp';
