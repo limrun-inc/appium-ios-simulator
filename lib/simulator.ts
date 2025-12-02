@@ -1,7 +1,7 @@
 import { SimulatorXcode14 } from './simulator-xcode-14';
 import { SimulatorXcode15 } from './simulator-xcode-15';
 import { getSimulatorInfo, assertXcodeVersion, MIN_SUPPORTED_XCODE_VERSION } from './utils';
-import * as xcode from 'appium-xcode';
+import * as xcode from '@limrun/appium-xcode';
 import { log } from './logger';
 import type { Simulator, SimulatorLookupOptions } from './types';
 
@@ -57,7 +57,7 @@ export async function getSimulator(udid: string, opts: SimulatorLookupOptions = 
       break;
   }
 
-  const result = new SimClass(udid, xcodeVersion, logger, limInstanceApiUrl, limInstanceToken);
+  const result = new SimClass(udid, xcodeVersion, limInstanceApiUrl, limInstanceToken, logger);
   if (devicesSetPath) {
     result.devicesSetPath = devicesSetPath;
   }
