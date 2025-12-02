@@ -1,5 +1,5 @@
 {
-  "name": "appium-ios-simulator",
+  "name": "@limrun/appium-ios-simulator",
   "description": "iOS Simulator interface for Appium.",
   "keywords": [
     "appium",
@@ -35,13 +35,13 @@
   ],
   "dependencies": {
     "@appium/support": "^7.0.0-rc.1",
+    "@limrun/appium-xcode": "6.1.2-lim.1",
+    "@limrun/node-simctl": "^8.0.5-lim.2",
     "@xmldom/xmldom": "^0.x",
-    "appium-xcode": "^6.0.0",
     "async-lock": "^1.0.0",
     "asyncbox": "^4.0.1",
     "bluebird": "^3.5.1",
     "lodash": "^4.2.1",
-    "node-simctl": "file:../node-simctl",
     "semver": "^7.0.0",
     "teen_process": "^4.0.4"
   },
