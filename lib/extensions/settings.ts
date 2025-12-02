@@ -1,10 +1,9 @@
 import _ from 'lodash';
-import { NSUserDefaults, generateDefaultsCommandArgs } from '../defaults-utils';
+import { generateDefaultsCommandArgs } from '../defaults-utils';
 import B from 'bluebird';
 import path from 'path';
 import { exec } from 'teen_process';
 import AsyncLock from 'async-lock';
-import { fs } from '@appium/support';
 import type { CoreSimulator, HasSettings, DevicePreferences, CommonPreferences, RunOptions, LocalizationOptions } from '../types';
 import type { StringRecord } from '@appium/types';
 
@@ -301,50 +300,7 @@ export async function updatePreferences(
   devicePrefs: DevicePreferences = {},
   commonPrefs: CommonPreferences = {}
 ): Promise<boolean> {
-  if (!_.isEmpty(devicePrefs)) {
-    this.log.debug(`Setting preferences of ${this.udid} Simulator to ${JSON.stringify(devicePrefs)}`);
-  }
-  if (!_.isEmpty(commonPrefs)) {
-    this.log.debug(`Setting common Simulator preferences to ${JSON.stringify(commonPrefs)}`);
-  }
-  const homeFolderPath = process.env.HOME;
-  if (!homeFolderPath) {
-    this.log.warn(`Cannot get the path to HOME folder from the process environment. ` +
-      `Ignoring Simulator preferences update.`);
-    return false;
-  }
-  verifyDevicePreferences.bind(this)(devicePrefs);
-  const plistPath = path.resolve(homeFolderPath, 'Library', 'Preferences', 'com.apple.iphonesimulator.plist');
-  return await PREFERENCES_PLIST_GUARD.acquire(this.constructor.name, async () => {
-    const defaults = new NSUserDefaults(plistPath);
-    const prefsToUpdate = _.clone(commonPrefs);
-    try {
-      if (!_.isEmpty(devicePrefs)) {
-        let existingDevicePrefs: any;
-        const udidKey = this.udid.toUpperCase();
-        if (await fs.exists(plistPath)) {
-          const currentPlistContent = await defaults.asJson();
-          if (_.isPlainObject(currentPlistContent.DevicePreferences)
-              && _.isPlainObject(currentPlistContent.DevicePreferences[udidKey])) {
-            existingDevicePrefs = currentPlistContent.DevicePreferences[udidKey];
-          }
-        }
-        Object.assign(prefsToUpdate, {
-          DevicePreferences: {
-            [udidKey]: Object.assign({}, existingDevicePrefs || {}, devicePrefs)
-          }
-        });
-      }
-      await defaults.update(prefsToUpdate);
-      this.log.debug(`Updated ${this.udid} Simulator preferences at '${plistPath}' with ` +
-        JSON.stringify(prefsToUpdate));
-      return true;
-    } catch (e: any) {
-      this.log.warn(`Cannot update ${this.udid} Simulator preferences at '${plistPath}'. ` +
-        `Try to delete the file manually in order to reset it. Original error: ${e.message}`);
-      return false;
-    }
-  });
+  throw new Error('updatePreferences is not implemented');
 }
 
 /**
