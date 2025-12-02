@@ -1,8 +1,5 @@
-import { fs } from '@appium/support';
-import { exec } from 'teen_process';
 import path from 'path';
 import _ from 'lodash';
-import B from 'bluebird';
 import { SimulatorXcode14 } from './simulator-xcode-14';
 
 export class SimulatorXcode15 extends SimulatorXcode14 {
@@ -105,28 +102,7 @@ export class SimulatorXcode15 extends SimulatorXcode14 {
    * @returns A set of system app bundle identifiers
    */
   private async _fetchSystemAppBundleIds(): Promise<Set<string>> {
-    if (this._systemAppBundleIds) {
-      return this._systemAppBundleIds;
-    }
-
-    const appsRoot = path.resolve(await this._getSystemRoot(), 'Applications');
-    const fetchBundleId = async (appRoot: string): Promise<string | null> => {
-      const infoPlistPath = path.resolve(appRoot, 'Info.plist');
-      try {
-        const {stdout} = await exec('/usr/libexec/PlistBuddy', [
-          '-c', 'print CFBundleIdentifier', infoPlistPath
-        ]);
-        return _.trim(stdout);
-      } catch {
-        return null;
-      }
-    };
-    const allApps = (await fs.readdir(appsRoot))
-      .filter((x) => x.endsWith('.app'))
-      .map((x) => path.join(appsRoot, x));
-    const bundleIds = await B.all(allApps.map(fetchBundleId));
-    this._systemAppBundleIds = new Set(bundleIds.filter((x): x is string => x !== null));
-    return this._systemAppBundleIds;
+    throw new Error('_fetchSystemAppBundleIds is not implemented');
   }
 }
 
