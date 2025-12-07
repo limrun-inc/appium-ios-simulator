@@ -300,7 +300,8 @@ export async function updatePreferences(
   devicePrefs: DevicePreferences = {},
   commonPrefs: CommonPreferences = {}
 ): Promise<boolean> {
-  throw new Error('updatePreferences is not implemented');
+  this.log.info(`Updating simulator preferences is not supported, ignoring...`);
+  return true;
 }
 
 /**

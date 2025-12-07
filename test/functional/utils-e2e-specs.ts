@@ -1,7 +1,7 @@
 // transpile:mocha
 import { killAllSimulators } from '../../lib/utils';
 import { getSimulator } from '../../lib/simulator';
-import { Simctl } from '@limrun/node-simctl';
+import { Simctl } from 'node-simctl';
 import { LONG_TIMEOUT, verifyStates } from './helpers';
 import { use as chaiUse } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
