@@ -1,7 +1,7 @@
 import { SimulatorXcode14 } from './simulator-xcode-14';
 import { SimulatorXcode15 } from './simulator-xcode-15';
 import { getSimulatorInfo, assertXcodeVersion, MIN_SUPPORTED_XCODE_VERSION } from './utils';
-import * as xcode from '@limrun/appium-xcode';
+import * as xcode from 'appium-xcode';
 import { log } from './logger';
 import type { Simulator, SimulatorLookupOptions } from './types';
 
