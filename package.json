@@ -7,7 +7,11 @@
     "ios",
     "simctl"
   ],
+<<<<<<< HEAD
   "version": "8.0.9",
+=======
+  "version": "8.0.5-lim.6",
+>>>>>>> 401d4db (lim: fix app listing)
   "author": "Appium Contributors",
   "license": "Apache-2.0",
   "repository": {

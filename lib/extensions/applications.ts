@@ -45,6 +45,7 @@ export async function isAppInstalled(this: CoreSimulatorWithApps, bundleId: stri
     if (!allApps[bundleId]) {
       return false;
     }
+    return true;
   } catch {
     // get_app_container subcommand fails for system applications,
     // so we try the hidden appinfo subcommand, which prints correct info for
@@ -56,7 +57,6 @@ export async function isAppInstalled(this: CoreSimulatorWithApps, bundleId: stri
       return false;
     }
   }
-  return false;
 }
 
 /**
