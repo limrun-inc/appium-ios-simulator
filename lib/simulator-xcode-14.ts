@@ -490,7 +490,7 @@ export class SimulatorXcode14 extends EventEmitter implements
   async ps(): Promise<ProcessInfo[]> {
     const {stdout} = await this.simctl.spawnProcess([
       'launchctl', 'list'
-    ]);
+    ]) as { code: number; stdout: Buffer; stderr: Buffer };
     /*
     Example match:
       PID	Status	Label
@@ -517,7 +517,7 @@ export class SimulatorXcode14 extends EventEmitter implements
     };
 
     const result: ProcessInfo[] = [];
-    for (const line of stdout.split('\n')) {
+    for (const line of stdout.toString('utf-8').split('\n')) {
       const trimmedLine = _.trim(line);
       if (!trimmedLine) {
         continue;
