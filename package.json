@@ -40,7 +40,7 @@
   "dependencies": {
     "@appium/support": "^7.0.0-rc.1",
     "appium-xcode": "npm:@limrun/appium-xcode@6.1.3-lim.1",
-    "node-simctl": "npm:@limrun/node-simctl@8.0.5-lim.5",
+    "node-simctl": "npm:@limrun/node-simctl@8.1.1-lim.1",
     "@xmldom/xmldom": "^0.x",
     "async-lock": "^1.0.0",
     "asyncbox": "^4.0.1",
