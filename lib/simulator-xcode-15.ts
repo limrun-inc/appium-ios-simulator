@@ -13,8 +13,12 @@ export class SimulatorXcode15 extends SimulatorXcode14 {
    * @return True if the given application is installed.
    */
   isAppInstalled = async (bundleId: string): Promise<boolean> => {
-    const info = await this.simctl.appInfo(bundleId);
-    return info.includes('ApplicationType');
+    try {
+      const info = await this.simctl.appInfo(bundleId);
+      return info.CFBundleIdentifier === bundleId;
+    } catch {
+      return false;
+    }
   };
 
   /**

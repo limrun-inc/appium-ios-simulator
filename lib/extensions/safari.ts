@@ -3,7 +3,6 @@ import path from 'path';
 import { timing } from '@appium/support';
 import { MOBILE_SAFARI_BUNDLE_ID, SAFARI_STARTUP_TIMEOUT_MS } from '../utils';
 import { waitForCondition } from 'asyncbox';
-import { exec } from 'teen_process';
 import type { CoreSimulator, InteractsWithSafariBrowser, InteractsWithApps, HasSettings } from '../types';
 import type { StringRecord } from '@appium/types';
 
@@ -107,7 +106,7 @@ export async function getWebInspectorSocket(this: CoreSimulatorWithSafariBrowser
   if (this._webInspectorSocket) {
     return this._webInspectorSocket;
   }
-  const openFiles = await this.simctl.listOpenFiles();
+  const openFiles = await this.simctl.lsof();
   const socketPath = openFiles.filter((file) => file.kind === 'unix' && file.path.endsWith('com.apple.webinspectord_sim.socket'));
   if (socketPath.length !== 1) {
     return null;
