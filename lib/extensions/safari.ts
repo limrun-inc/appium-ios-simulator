@@ -107,29 +107,13 @@ export async function getWebInspectorSocket(this: CoreSimulatorWithSafariBrowser
   if (this._webInspectorSocket) {
     return this._webInspectorSocket;
   }
-
-  // lsof -aUc launchd_sim gives a set of records like
-  // https://github.com/appium/appium-ios-simulator/commit/c00901a9ddea178c5581a7a57d96d8cee3f17c59#diff-2be09dd2ea01cfd6bbbd73e10bc468da782a297365eec706999fc3709c01478dR102
-  // these _appear_ to always be grouped together by PID for each simulator.
-  // Therefore, by obtaining simulator PID with an expected simulator UDID,
-  // we can get the correct `com.apple.webinspectord_sim.socket`
-  // without depending on the order of `lsof -aUc launchd_sim` result.
-  const {stdout} = await exec('lsof', ['-aUc', 'launchd_sim']);
-  const udidPattern = `([0-9]{1,5}).+${this.udid}`;
-  const udidMatch = stdout.match(new RegExp(udidPattern));
-  if (!udidMatch) {
-    this.log.debug(`Failed to get Web Inspector socket. lsof result: ${stdout}`);
+  const openFiles = await this.simctl.listOpenFiles();
+  const socketPath = openFiles.filter((file) => file.kind === 'unix' && file.path.endsWith('com.apple.webinspectord_sim.socket'));
+  if (socketPath.length !== 1) {
     return null;
   }
-
-  const pidPattern = `${udidMatch[1]}.+\\s+(\\S+com\\.apple\\.webinspectord_sim\\.socket)`;
-  const pidMatch = stdout.match(new RegExp(pidPattern));
-  if (!pidMatch || !pidMatch[1]) {
-    this.log.debug(`Failed to get Web Inspector socket. lsof result: ${stdout}`);
-    return null;
-  }
-  const socketPath = pidMatch[1];
-  this._webInspectorSocket = socketPath;
-  return socketPath;
+  // This path will be used to tell Limrun to forward that UNIX socket
+  // to here over TCP.
+  this._webInspectorSocket = socketPath[0].path;
+  return this._webInspectorSocket;
 }
-
