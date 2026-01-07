@@ -7,6 +7,7 @@ import type { XcodeVersion } from 'appium-xcode';
 import path from 'path';
 import { Simctl } from 'node-simctl';
 import type { StringRecord } from '@appium/types';
+import type { Ios } from '@limrun/api';
 // it's a hack needed to stub getDevices in tests
 import * as utilsModule from './utils';
 
@@ -122,19 +123,21 @@ export async function killAllSimulators(timeout: number = DEFAULT_SIM_SHUTDOWN_T
 
 export interface SimulatorInfoOptions {
   devicesSetPath?: string | null;
+  limClient?: import('@limrun/api').Ios.InstanceClient;
 }
 
 /**
  * @param udid - The simulator UDID.
- * @param opts - Options including devicesSetPath.
+ * @param opts - Options including devicesSetPath and limClient.
  * @returns Promise that resolves to simulator info or undefined if not found.
  */
 export async function getSimulatorInfo(udid: string, opts: SimulatorInfoOptions = {}): Promise<any> {
   const {
-    devicesSetPath
+    devicesSetPath,
+    limClient,
   } = opts;
   // see the README for github.com/appium/node-simctl for example output of getDevices()
-  const devices = _.toPairs(await utilsModule.getDevices({devicesSetPath}))
+  const devices = _.toPairs(await utilsModule.getDevices({devicesSetPath, limClient}))
     .map((pair) => pair[1])
     .reduce((a, b) => a.concat(b), []);
   return _.find(devices, (sim: any) => sim.udid === udid);
@@ -174,10 +177,21 @@ export function assertXcodeVersion<V extends XcodeVersion>(xcodeVersion: V): V {
   return xcodeVersion;
 }
 
+export interface GetDevicesOptions {
+  devicesSetPath?: string | null;
+  limClient?: Ios.InstanceClient;
+}
+
 /**
- * @param simctlOpts - Optional simctl options
+ * @param opts - Options including devicesSetPath and limClient
  * @returns Promise that resolves to a record of devices grouped by SDK version
  */
-export async function getDevices(simctlOpts?: StringRecord): Promise<Record<string, any[]>> {
-  return await new Simctl(simctlOpts).getDevices();
+export async function getDevices(opts?: GetDevicesOptions): Promise<Record<string, any[]>> {
+  if (!opts?.limClient) {
+    throw new Error('limClient is required');
+  }
+  return await new Simctl({
+    devicesSetPath: opts.devicesSetPath,
+    limClient: opts.limClient,
+  }).getDevices();
 }

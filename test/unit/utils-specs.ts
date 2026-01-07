@@ -126,7 +126,7 @@ describe('util', function () {
 });
 
 describe('Device preferences verification', function () {
-  const sim = new SimulatorXcode14('1234', XCODE_VERSION_10, "", "");
+  const sim = new SimulatorXcode14('1234', XCODE_VERSION_10, {} as import('@limrun/api').Ios.InstanceClient, null);
 
   describe('for SimulatorWindowLastScale option', function () {
 

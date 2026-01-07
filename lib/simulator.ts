@@ -21,11 +21,10 @@ export async function getSimulator(udid: string, opts: SimulatorLookupOptions = 
     checkExistence = true,
     devicesSetPath,
     logger,
-    limInstanceApiUrl,
-    limInstanceToken,
+    limClient,
   } = opts;
-  if (!limInstanceApiUrl || !limInstanceToken) {
-    throw new Error('limInstanceApiUrl and limInstanceToken are required');
+  if (!limClient) {
+    throw new Error('limClient is required');
   }
 
   const xcodeVersion = assertXcodeVersion(
@@ -33,7 +32,8 @@ export async function getSimulator(udid: string, opts: SimulatorLookupOptions = 
   );
   if (checkExistence) {
     const simulatorInfo = await getSimulatorInfo(udid, {
-      devicesSetPath
+      devicesSetPath,
+      limClient,
     });
 
     if (!simulatorInfo) {
@@ -57,7 +57,7 @@ export async function getSimulator(udid: string, opts: SimulatorLookupOptions = 
       break;
   }
 
-  const result = new SimClass(udid, xcodeVersion, limInstanceApiUrl, limInstanceToken, logger);
+  const result = new SimClass(udid, xcodeVersion, limClient, logger);
   if (devicesSetPath) {
     result.devicesSetPath = devicesSetPath;
   }

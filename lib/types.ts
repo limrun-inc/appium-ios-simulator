@@ -286,10 +286,8 @@ export interface SimulatorLookupOptions {
   devicesSetPath?: string|null;
   /** The logger to use for the simulator class. A default logger will be created if not provided */
   logger?: AppiumLogger;
-  /** The URL of the Limrun instance API. */
-  limInstanceApiUrl?: string;
-  /** The token of the Limrun instance. */
-  limInstanceToken?: string;
+  /** The Limrun iOS instance client for remote simulator operations. */
+  limClient?: import('@limrun/api').Ios.InstanceClient;
 }
 
 export type Simulator = CoreSimulator
